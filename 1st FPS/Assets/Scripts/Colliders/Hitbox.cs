@@ -6,6 +6,7 @@ using UnityEngine;
 		Ally,
 		Enemy,
 		Neutral,
+        Bullet,
 		Count
 	}
 public class Hitbox : MonoBehaviour
@@ -14,6 +15,8 @@ public class Hitbox : MonoBehaviour
 	[field:SerializeField] protected bool CanReceiveHit { get; set; }
 	[field: SerializeField] protected EAgentType AgentType { get; set; } = EAgentType.Count;
 	[field: SerializeField] protected List<EAgentType> AffectedAgents { get; set; }
+    
+    [SerializeField] private GameObject m_part;
 
     // //////////////////////////
 
@@ -41,7 +44,7 @@ public class Hitbox : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-		var otherHitbox = collision.gameObject.GetComponent<Hitbox>();
+        var otherHitbox = collision.gameObject.GetComponent<Hitbox>();
 
         if (otherHitbox == null)
         {
@@ -52,6 +55,16 @@ public class Hitbox : MonoBehaviour
         {
             //Vector3 contactPoint = collision.GetContact(0).point;
             //FXManager.Instance.OnHit(AgentType, contactPoint);
+
+            //Debug.Log(gameObject.name + " has hit " + otherHitbox.gameObject.name);
+
+            if (AgentType == EAgentType.Bullet)
+            {
+                Vector3 contactPoint = collision.GetContact(0).point;
+                
+                Instantiate(m_part, contactPoint, Quaternion.identity);
+                Destroy(gameObject);
+            }
 
             if (collision.gameObject.GetComponentInParent<EnemyHit>() != null && 
                 HasBeenHit == false)

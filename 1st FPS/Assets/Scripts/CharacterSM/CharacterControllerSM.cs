@@ -31,6 +31,7 @@ public class CharacterControllerSM : BaseStateMachine<CharacterState>
 
     [SerializeField] private GroundDetection m_groundCollider;
     [SerializeField] private Hitbox m_hitBox;
+    [SerializeField] private float m_horizontalRotationSpeed = 3.0f;
 
 
     protected override void CreatePossibleStates()
@@ -84,6 +85,16 @@ public class CharacterControllerSM : BaseStateMachine<CharacterState>
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+
+        RotatePlayer();
+    }
+
+    protected void RotatePlayer()
+    {
+        //Match rotationSpeed with Camera.rotationSpeed
+
+        float currentAngleX = Input.GetAxis("Mouse X") * m_horizontalRotationSpeed;
+        PlayerGO.transform.Rotate(PlayerGO.transform.up, currentAngleX);
     }
 
     private void SetForwardVectorFromGroundNormal()
